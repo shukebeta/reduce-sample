@@ -1,17 +1,52 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createStore, combineReducers } from "redux";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const product = (state=[], action) => {
+    return state;
+}
+const initialShoppingCartState = {
+    sku: [
+        {
+            product: 'bread 700g',
+            quantity: 2,
+            unitCost: 90
+        },
+        {
+            product: 'milk 500ml',
+            quantity: 1,
+            unitCost: 47
+        }
+    ]
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const ADD_TO_CART = 'ADD_TO_CART'
+const shoppingCart = (state=initialShoppingCartState, action) => {
+    switch (action.type) {
+        case ADD_TO_CART:
+           return { 
+               ...state, 
+               sku: [...state.sku, action.payload],
+           }
+        default: 
+            return state
+    }
+}
+const addToCart = (product, quantity, unitCost) => {
+   return {
+       type: ADD_TO_CART,
+       payload: {product, quantity, unitCost}
+   } 
+}
+
+const rootReducer = combineReducers({
+    product,
+    shoppingCart,
+})
+
+const store = createStore(rootReducer);
+const unsubscribe = store.subscribe(() => console.log(store.getState()))
+
+store.dispatch(addToCart('Coffee 500gm', 1, 250));
+store.dispatch(addToCart('Flour 1kg', 2, 110));
+store.dispatch(addToCart('Juice 2L', 1, 250));
+store.dispatch(addToCart('Juice 3L', 1, 270));
+unsubscribe()
