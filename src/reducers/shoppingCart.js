@@ -1,4 +1,4 @@
-import {ADD_TO_CART} from "../actions/cart-actions"
+import {ADD_TO_CART, UPDATE_CART, DELETE_FROM_CART} from "../actions/cart-actions"
 const initialShoppingCartState = {
     sku: [
         {
@@ -21,6 +21,18 @@ const shoppingCart = (state=initialShoppingCartState, action) => {
                 ...state,
                 sku: [...state.sku, action.payload],
             }
+        case UPDATE_CART: 
+            return {
+                ...state,
+                sku: state.sku.map(item => item.product === action.payload.product ? action.payload : item)
+            }
+
+        case DELETE_FROM_CART: 
+            return {
+                ...state,
+                sku: state.sku.filter(item => item.product !== action.payload.product)
+            }
+
         default:
             return state
     }
